@@ -11,13 +11,11 @@
     <style>
         /* === LÍNEA GRÁFICA "LA PUERTA DEL TERRITORIO" === */
         :root {
-            /* Colores Principales y Secundarios del Manual */
             --blue: #3676c1;
             --cream: #fff0cb;
             --orange: #ffbf77;
             --green: #b6e17a;
             
-            /* Tipografías del Manual */
             --font-title: 'Lora', 'CMU Serif', serif;
             --font-body: 'Roboto', sans-serif;
         }
@@ -30,8 +28,17 @@
             position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
             display: none; flex-direction: column; opacity: 0;
             transition: opacity 0.8s ease-in-out;
+            z-index: 10;
         }
-        .screen.active { display: flex; opacity: 1; z-index: 10; }
+        .screen.active { display: flex; opacity: 1; }
+
+        /* === NUEVO: CONTENEDOR 360 GLOBAL === */
+        /* Se coloca por debajo de las pantallas pero fuera del display:none para evitar bugs de 0x0 px */
+        #contenedor-360 {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 1; opacity: 0; pointer-events: none; /* Desactivado por defecto */
+            transition: opacity 0.8s ease-in-out;
+        }
 
         /* === PANTALLA 0: LOADING === */
         #pantalla-0 { background-color: var(--blue); justify-content: center; align-items: center; text-align: center; z-index: 100;}
@@ -44,7 +51,7 @@
         #pantalla-0 h1 { font-family: var(--font-title); font-size: 1.8rem; max-width: 600px; padding: 20px; line-height: 1.4; color: var(--cream);}
 
         /* === PANTALLA 1: HOME === */
-        #pantalla-1 { background-color: #111; }
+        #pantalla-1 { background-color: #111; z-index: 20; } /* Z-index mayor para tapar el 360 */
         
         header { display: flex; justify-content: space-between; padding: 30px 50px; z-index: 20; align-items: center; position: relative;}
         
@@ -143,7 +150,9 @@
         #pantalla-2-360 { 
             justify-content: center; align-items: center; 
             position: relative; overflow: hidden;
+            background: transparent !important; /* Para que deje ver el 360 de fondo */
             perspective: 2000px;
+            pointer-events: none; /* Crucial: los clics "traspasan" esta capa para poder rotar el 360 */
         }
 
         .floating-text { 
@@ -156,7 +165,6 @@
             display: flex; gap: 50px; z-index: 10; margin-top: 50px;
             transform-style: preserve-3d; 
             width: 100%; justify-content: space-around; padding: 0 10vw;
-            /* Permite que los clics en espacios vacíos interactúen con el video 360 de fondo */
             pointer-events: none; 
         }
 
@@ -164,8 +172,7 @@
             width: 30vw; max-width: 400px;
             text-align: center; cursor: pointer; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
             background: none; border: none;
-            /* Reactiva los clics solo sobre la puerta */
-            pointer-events: auto; 
+            pointer-events: auto; /* Reactiva los clics solo sobre la puerta */
         }
 
         .door-frame {
@@ -204,13 +211,8 @@
 
         .hint-text { position: absolute; bottom: 90px; font-size: 0.95rem; color: var(--cream); font-family: var(--font-body); background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; z-index: 20; pointer-events: none;}
 
-        /* Ajuste para el canvas 360 de A-Frame */
-        .bg-360-container {
-            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1;
-        }
-
         /* === PANTALLAS 3A y 3B: INTERIOR === */
-        .interior-screen { padding: 40px 10vw; overflow-y: auto; }
+        .interior-screen { padding: 40px 10vw; overflow-y: auto; z-index: 20; } /* Z-index mayor para tapar el 360 */
         
         #pantalla-3a { background-color: var(--cream); color: var(--blue); }
         #pantalla-3a .btn-volver { color: var(--blue); }
@@ -242,6 +244,16 @@
     </style>
 </head>
 <body>
+
+    <div id="contenedor-360">
+        <a-scene embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+            <a-assets>
+                <video id="video-asset-360" src="https://github.com/marzipan007/ProyectoFGS/releases/download/v1.0/Video360Calle.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
+            </a-assets>
+            <a-videosphere src="#video-asset-360" rotation="0 -90 0"></a-videosphere>
+            <a-entity camera look-controls="reverseMouseDrag: true"></a-entity>
+        </a-scene>
+    </div>
 
     <div id="pantalla-0" class="screen active">
         <div class="loading-door"></div>
@@ -361,19 +373,6 @@
     </div>
 
     <div id="pantalla-2-360" class="screen">
-        
-        <div class="bg-360-container">
-            <a-scene embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-                <a-assets>
-                    <video id="video-asset-360" src="Video360Calle.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
-                </a-assets>
-                
-                <a-videosphere src="#video-asset-360" rotation="0 -90 0"></a-videosphere>
-                
-                <a-entity camera look-controls="reverseMouseDrag: true"></a-entity>
-            </a-scene>
-        </div>
-        
         <div class="floating-text">Estás en Sierra Morena. Mejor de lo que imaginas.</div>
         <div class="hint-text">Puedes arrastrar para mirar alrededor. Abre una puerta.</div>
 
@@ -460,6 +459,8 @@
 
     <script>
         let homeVisitado = false;
+        
+        // Simular carga
         setTimeout(() => {
             document.getElementById('pantalla-0').classList.remove('active');
             document.getElementById('pantalla-1').classList.add('active');
@@ -480,53 +481,58 @@
             document.getElementById('pantalla-2-video').classList.add('active');
         }
 
+        // Lógica de mostrar/ocultar el 360
+        function activar360() {
+            const cont360 = document.getElementById('contenedor-360');
+            cont360.style.opacity = '1';
+            cont360.style.pointerEvents = 'auto'; // Habilita los clics en el video
+            
+            const video360 = document.getElementById('video-asset-360');
+            if(video360) video360.play();
+        }
+
+        function desactivar360() {
+            const cont360 = document.getElementById('contenedor-360');
+            cont360.style.opacity = '0';
+            cont360.style.pointerEvents = 'none'; // Deshabilita clics para que no estorbe
+        }
+
         function cerrarVideoPaso2() {
             document.getElementById('pantalla-2-video').classList.remove('active');
             document.getElementById('pantalla-2-360').classList.add('active');
-            
-            // Fuerza la reproducción del video 360 al abrir la pantalla
-            const video360 = document.getElementById('video-asset-360');
-            if(video360) {
-                video360.play();
-            }
-            
-            // Resuelve un bug común de A-Frame donde no ajusta el tamaño al aparecer de un display:none
-            window.dispatchEvent(new Event('resize'));
+            activar360();
         }
 
         function irA360DesdeAlianzas() {
             toggleAlianzas();
             document.getElementById('pantalla-1').classList.remove('active');
             document.getElementById('pantalla-2-360').classList.add('active');
-            
-            const video360 = document.getElementById('video-asset-360');
-            if(video360) video360.play();
-            window.dispatchEvent(new Event('resize'));
+            activar360();
         }
 
         function abrirPilar() {
             document.getElementById('pantalla-2-360').classList.remove('active');
             document.getElementById('pantalla-3a').classList.add('active');
+            desactivar360(); // Lo ocultamos para que no afecte el rendimiento al estar en el interior
         }
 
         function abrirCarolina() {
             document.getElementById('pantalla-2-360').classList.remove('active');
             document.getElementById('pantalla-3b').classList.add('active');
+            desactivar360();
         }
 
         function volverA360() {
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
             document.getElementById('pantalla-2-360').classList.add('active');
+            activar360();
             actualizarProgreso();
-            
-            const video360 = document.getElementById('video-asset-360');
-            if(video360) video360.play();
-            window.dispatchEvent(new Event('resize'));
         }
 
         function volverAlHome() {
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
             document.getElementById('pantalla-1').classList.add('active');
+            desactivar360();
             actualizarProgreso();
         }
 
