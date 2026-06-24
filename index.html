@@ -50,7 +50,6 @@
         #pantalla-0 h1 { font-family: var(--font-title); font-size: 1.8rem; max-width: 600px; padding: 20px; line-height: 1.4; color: var(--cream);}
 
         /* === PANTALLA 1: HOME === */
-        /* CORREGIDO: Se eliminó fondo-home.jpg y se usa un degradado CSS elegante */
         #pantalla-1 { 
             background: linear-gradient(135deg, #111a24 0%, #05080c 100%); 
             z-index: 20; 
@@ -251,7 +250,7 @@
     <div id="contenedor-360">
         <a-scene embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
             <a-assets>
-                <video id="video-asset-360" src="Video360Calle.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
+                <video id="video-asset-360" src="Video360Calle.mp4" autoplay loop muted playsinline></video>
             </a-assets>
             <a-videosphere src="#video-asset-360" rotation="0 -90 0"></a-videosphere>
             <a-entity camera look-controls="reverseMouseDrag: true"></a-entity>
@@ -444,7 +443,7 @@
             </div>
             <div class="info-block">
                 <h1>Carolina, Lideresa.</h1>
-                <p>35 años tejiendo lazos. Carolina lidera tres frentes en la comunidad: deportivo, educativo y rescate animal. A través del trabajo conjunto con la Fundación, ha logrado canalizar recursos para construir canchas y organizar talleres extracurriculares.</p>
+                <p>35 años tejiendo lazos. Carolina lidera tres frentes en la comunidad: deportivo, educativo y rescate animal. A través del trabalho conjunto con la Fundación, ha logrado canalizar recursos para construir canchas y organizar talleres extracurriculares.</p>
                 
                 <div class="action-card">
                     <h3>¿Lideras una causa en tu comunidad?</h3>
@@ -463,7 +462,6 @@
     <script>
         let homeVisitado = false;
         
-        // Simular carga
         setTimeout(() => {
             document.getElementById('pantalla-0').classList.remove('active');
             document.getElementById('pantalla-1').classList.add('active');
@@ -484,7 +482,6 @@
             document.getElementById('pantalla-2-video').classList.add('active');
         }
 
-        // Lógica de mostrar/ocultar el 360
         function activar360() {
             const cont360 = document.getElementById('contenedor-360');
             cont360.style.opacity = '1';
