@@ -250,7 +250,7 @@
     <div id="contenedor-360">
         <a-scene embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
             <a-assets>
-                <video id="video-asset-360" loop muted playsinline></video>
+                <video id="video-asset-360" src="https://vjs.zencdn.net/v/oceans.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
             </a-assets>
             <a-videosphere src="#video-asset-360" rotation="0 -90 0"></a-videosphere>
             <a-entity camera look-controls="reverseMouseDrag: true"></a-entity>
@@ -482,7 +482,6 @@
             document.getElementById('pantalla-2-video').classList.add('active');
         }
 
-        // NUEVA LÓGICA: Inyección dinámica del archivo de video para evitar el fallo de "No supported sources"
         function activar360() {
             const cont360 = document.getElementById('contenedor-360');
             cont360.style.opacity = '1';
@@ -490,20 +489,12 @@
             
             const video360 = document.getElementById('video-asset-360');
             if (video360) {
-                // Si la fuente no se ha inyectado aún, la forzamos aquí con un bypass de caché
-                if (!video360.src || video360.src === "") {
-                    video360.src = "Video360Calle.mp4?v=" + new Date().getTime();
-                    video360.load();
-                }
-                
-                // Intento robusto de play gestionando la promesa del navegador
+                // Truco de interacción forzada para Mac/Chrome en entornos 3D
                 var playPromise = video360.play();
                 if (playPromise !== undefined) {
                     playPromise.then(_ => {
-                        console.log("Video 360 reproduciéndose correctamente.");
+                        console.log("Video interactivo listo.");
                     }).catch(error => {
-                        console.log("La reproducción automática requirió interacción del usuario.");
-                        // Crear un listener global temporal para reproducir al primer clic en la pantalla negra
                         document.addEventListener('click', function fn() {
                             video360.play();
                             document.removeEventListener('click', fn);
@@ -547,11 +538,13 @@
             desactivar360();
         }
 
+        // Fix de refresco para asegurar el render de las texturas en A-Frame
         function volverA360() {
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
             document.getElementById('pantalla-2-360').classList.add('active');
             activar360();
             actualizarProgreso();
+            window.dispatchEvent(new Event('resize'));
         }
 
         function volverAlHome() {
