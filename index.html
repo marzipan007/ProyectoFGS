@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundación Grupo Social - Portal de Territorios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    
+    <style>
+        /* === LÍNEA GRÁFICA "LA PUERTA DEL TERRITORIO" === */
+        :root {
+            /* Colores Principales y Secundarios del Manual */
+            --blue: #3676c1;
+            --cream: #fff0cb;
+            --orange: #ffbf77;
+            --green: #b6e17a;
+            
+            /* Tipografías del Manual */
+            --font-title: 'Lora', 'CMU Serif', serif;
+            --font-body: 'Roboto', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-body); overflow: hidden; background-color: var(--blue); color: var(--cream); }
+
+        /* Contenedor principal de pantallas */
+        .screen {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            display: none; flex-direction: column; opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+        .screen.active { display: flex; opacity: 1; z-index: 10; }
+
+        /* === PANTALLA 0: LOADING === */
+        #pantalla-0 { background-color: var(--blue); justify-content: center; align-items: center; text-align: center; z-index: 100;}
+        .loading-door {
+            width: 80px; height: 120px; border: 2px solid var(--orange);
+            border-radius: 40px 40px 0 0;
+            animation: pulse 1.5s infinite alternate; margin-bottom: 20px;
+        }
+        @keyframes pulse { from { box-shadow: 0 0 10px var(--orange); } to { box-shadow: 0 0 30px var(--orange), 0 0 10px inset var(--orange); } }
+        #pantalla-0 h1 { font-family: var(--font-title); font-size: 1.8rem; max-width: 600px; padding: 20px; line-height: 1.4; color: var(--cream);}
+
+        /* === PANTALLA 1: HOME === */
+        #pantalla-1 { background-color: #111; }
+        
+        header { display: flex; justify-content: space-between; padding: 30px 50px; z-index: 20; align-items: center; position: relative;}
+        
+        .logo-fgs { 
+            background-color: #d9e8f5; 
+            padding: 8px 15px; 
+            border-radius: 10px;
+            display: inline-flex;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+        .logo-fgs:hover { transform: scale(1.05); }
+        .logo-fgs img { height: 45px; cursor: pointer; }
+
+        .progress-bar { font-family: var(--font-body); font-weight: 700; background: var(--blue); padding: 10px 20px; border: 1px solid var(--cream); color: var(--cream); border-radius: 5px; }
+
+        .doors-container {
+            display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 40px; flex-grow: 1; padding: 20px; position: relative; z-index: 10;
+        }
+
+        .door {
+            width: 140px; height: 230px; position: relative; cursor: pointer;
+            border-radius: 70px 70px 0 0; 
+            background: rgba(54, 118, 193, 0.1); border: 2px solid rgba(255, 240, 203, 0.3);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: all 0.3s; padding: 15px; text-align: center;
+        }
+        .door img { max-width: 90%; max-height: 80px; object-fit: contain; margin-bottom: 10px; filter: grayscale(1) opacity(0.6); transition: all 0.3s;}
+        .door-name { font-family: var(--font-title); font-size: 0.95rem; opacity: 0; transition: opacity 0.3s; color: var(--cream); pointer-events: none;}
+        
+        .door.closed:hover { border-color: var(--green); animation: vibrate 0.2s linear infinite alternate; background: rgba(182, 225, 122, 0.1);}
+        .door.closed:hover img { filter: grayscale(0) opacity(1); }
+        .door.closed:hover .door-name { opacity: 1; }
+        @keyframes vibrate { from { transform: rotate(-1deg); } to { transform: rotate(1deg); } }
+
+        .door.open {
+            border-color: var(--orange); background: rgba(255, 191, 119, 0.15); transform: scale(1.1);
+            animation: breath 3s infinite alternate;
+        }
+        .door.open img { filter: grayscale(0) opacity(1); }
+        .door.open .door-name { opacity: 1; color: var(--orange);}
+        @keyframes breath { from { box-shadow: 0 0 15px rgba(255, 191, 119, 0.2); } to { box-shadow: 0 0 30px rgba(255, 191, 119, 0.6); } }
+
+        .door.silhouette { background: rgba(255,255,255,0.05); border: 2px dashed #555; }
+
+        #msg-cerrada {
+            position: absolute; bottom: 20%; left: 50%; transform: translateX(-50%);
+            background: var(--blue); border: 1px solid var(--cream); color: var(--cream); padding: 10px 20px; 
+            font-family: var(--font-title); font-size: 1.1rem; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 30;
+        }
+
+        footer {
+            display: flex; justify-content: space-between; align-items: center; padding: 20px 50px;
+            background: var(--blue); border-top: 1px solid var(--cream); z-index: 20; position: relative;
+        }
+        .social-links a { color: var(--cream); text-decoration: none; margin-right: 15px; font-weight: bold;}
+        .footer-center { font-size: 0.9rem; color: var(--cream); font-family: var(--font-title); }
+        .btn-alianzas {
+            background: var(--cream); color: var(--blue); padding: 10px 20px; font-weight: bold; font-family: var(--font-body);
+            border: none; cursor: pointer; transition: 0.3s;
+        }
+        .btn-alianzas:hover { background: var(--orange); color: var(--blue); }
+
+        /* === PANTALLA 1B: OVERLAY ALIANZAS === */
+        #overlay-alianzas {
+            position: fixed; top: 0; right: -100%; width: 500px; height: 100vh;
+            background: var(--blue); color: var(--cream); z-index: 50;
+            transition: right 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            padding: 40px; overflow-y: auto; border-left: 2px solid var(--cream);
+        }
+        #overlay-alianzas.active { right: 0; }
+        .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--cream);}
+        
+        .alianzas-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
+        .icon-colmena { width: 50px; height: auto; display: flex; justify-content: center; align-items: center; }
+        .icon-colmena img { width: 100%; height: auto; }
+        
+        #overlay-alianzas h2 { font-family: var(--font-title); font-size: 2rem; line-height: 1.2; color: var(--cream);}
+        
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 30px; }
+        .stat-card { background: var(--blue); padding: 20px; border: 1px solid var(--cream); display: flex; flex-direction: column; justify-content: center;}
+        .stat-card h3 { font-size: 2rem; color: var(--green); font-family: var(--font-title); margin-bottom: 5px;}
+        .stat-card p { font-size: 0.85rem; line-height: 1.3; font-weight: 300; }
+        
+        .video-placeholder { width: 100%; height: 200px; border: 1px solid var(--cream); display: flex; align-items: center; justify-content: center; margin-bottom: 25px;}
+        
+        .cta-btn { display: block; width: 100%; padding: 15px; background: var(--green); color: var(--blue); text-align: center; border: none; font-weight: bold; cursor: pointer; margin-bottom: 15px; font-family: var(--font-body);}
+        .cta-btn-secondary { background: transparent; border: 1px solid var(--cream); color: var(--cream); }
+
+        /* === PANTALLA 2: VIDEO POPUP === */
+        #pantalla-2-video { background: var(--blue); justify-content: center; align-items: center; z-index: 100;}
+        .video-container { width: 80%; max-width: 900px; height: 60vh; background: #000; border: 2px solid var(--cream); display: flex; justify-content: center; align-items: center;}
+        .close-video { position: absolute; top: 30px; right: 40px; color: var(--cream); font-size: 2rem; cursor: pointer; }
+
+        /* === PANTALLA 2: INMERSIÓN VIDEO CALLE === */
+        #pantalla-2-360 { 
+            justify-content: center; align-items: center; 
+            position: relative; overflow: hidden;
+            perspective: 2000px;
+        }
+
+        .floating-text { 
+            position: absolute; bottom: 30px; left: 30px; background: var(--blue); color: var(--cream); 
+            padding: 15px 25px; border: 1px solid var(--cream); font-family: var(--font-title); 
+            font-size: 1.2rem; border-radius: 5px; z-index: 20; pointer-events: none;
+        }
+        
+        .internal-doors { 
+            display: flex; gap: 50px; z-index: 10; margin-top: 50px;
+            transform-style: preserve-3d; 
+            width: 100%; justify-content: space-around; padding: 0 10vw;
+            /* Permite que los clics en espacios vacíos interactúen con el video 360 de fondo */
+            pointer-events: none; 
+        }
+
+        .person-door { 
+            width: 30vw; max-width: 400px;
+            text-align: center; cursor: pointer; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            background: none; border: none;
+            /* Reactiva los clics solo sobre la puerta */
+            pointer-events: auto; 
+        }
+
+        .door-frame {
+            width: 100%; height: 60vh;
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+            border-radius: 12px; 
+            background-size: 100% 100%; background-position: center; 
+            margin-bottom: 15px; transition: all 0.4s ease;
+            background-color: rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(3px); 
+            -webkit-backdrop-filter: blur(3px);
+            box-shadow: 0 0 20px rgba(0,0,0,0.4); 
+            background-image: url('Simbolo principal puerta 5.png'); 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            position: relative;
+        }
+
+        .person-door:hover { transform: scale(1.05) translateY(-10px); }
+        .person-door:hover .door-frame { 
+            filter: drop-shadow(0 0 15px var(--orange)); 
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+
+        #door-pilar { transform: rotateY(20deg); }
+        #door-carolina { transform: rotateY(-20deg); }
+        #door-pilar:hover { transform: rotateY(20deg) scale(1.05) translateY(-10px); }
+        #door-carolina:hover { transform: rotateY(-20deg) scale(1.05) translateY(-10px); }
+
+        .door-text-block {
+            position: absolute; bottom: 8%; left: 8%; width: 84%; text-align: left;
+            color: #000; font-family: var(--font-body); pointer-events: none; 
+            background: rgba(255,255,255,0.8); padding: 10px; border-radius: 8px;
+        }
+        .door-text-block h3 { font-size: 1.8rem; margin-bottom: 2px; font-family: var(--font-title);}
+        .door-text-block p { font-size: 0.9rem; font-weight: bold;}
+
+        .hint-text { position: absolute; bottom: 90px; font-size: 0.95rem; color: var(--cream); font-family: var(--font-body); background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; z-index: 20; pointer-events: none;}
+
+        /* Ajuste para el canvas 360 de A-Frame */
+        .bg-360-container {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1;
+        }
+
+        /* === PANTALLAS 3A y 3B: INTERIOR === */
+        .interior-screen { padding: 40px 10vw; overflow-y: auto; }
+        
+        #pantalla-3a { background-color: var(--cream); color: var(--blue); }
+        #pantalla-3a .btn-volver { color: var(--blue); }
+        #pantalla-3a .action-card { background: var(--orange); border: 1px solid var(--blue); color: var(--blue); }
+        #pantalla-3a .btn-action { background: var(--blue); color: var(--cream); }
+        
+        #pantalla-3b { background-color: var(--green); color: var(--blue); }
+        #pantalla-3b .btn-volver { color: var(--blue); }
+        #pantalla-3b .action-card { background: var(--blue); border: 1px solid var(--cream); color: var(--cream); }
+        #pantalla-3b .btn-action { background: var(--green); color: var(--blue); border: 1px solid var(--blue);}
+
+        .btn-volver { background: none; border: none; font-size: 1.1rem; cursor: pointer; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; font-weight: bold; font-family: var(--font-body);}
+        .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; position: relative;}
+        
+        .simbolo-bg { position: absolute; top: -20px; right: -20px; width: 100px; height: auto; display: flex; justify-content: center; align-items: center; } 
+        .simbolo-bg img { width: 100%; height: auto; } 
+        
+        .media-block { background: #000; height: 450px; border: 1px solid var(--blue); display: flex; justify-content: center; align-items: center; color: var(--cream); overflow: hidden; border-radius: 10px;}
+        .info-block h1 { font-family: var(--font-title); font-size: 3rem; margin-bottom: 20px;}
+        .info-block p { font-size: 1.1rem; line-height: 1.6; margin-bottom: 30px; font-weight: 300;}
+        
+        .action-card { padding: 30px; text-align: center; border-radius: 10px;}
+        .action-card h3 { margin-bottom: 20px; font-family: var(--font-title); font-size: 1.5rem; }
+        .btn-action { display: inline-block; padding: 12px 25px; text-decoration: none; font-weight: bold; font-family: var(--font-body); border-radius: 5px;}
+        
+        .social-follow { margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(0,0,0,0.2); }
+        .social-follow a { display: block; color: inherit; text-decoration: none; margin-top: 8px; font-weight: bold;}
+
+    </style>
+</head>
+<body>
+
+    <div id="pantalla-0" class="screen active">
+        <div class="loading-door"></div>
+        <h1>Hay lugares en Colombia donde el futuro llegó tarde.<br>Estos son algunos de ellos.</h1>
+    </div>
+
+    <div id="pantalla-1" class="screen" style="background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('fondo-home.jpg') center/cover;">
+        <header>
+            <a href="https://www.fundaciongruposocial.co/" target="_blank" class="logo-fgs">
+                <img src="logo_fgs.png" alt="Fundación Grupo Social">
+            </a>
+            <div id="progress-text" class="progress-bar">Has abierto 0 de 8 territorios</div>
+        </header>
+
+        <div class="doors-container">
+            <div class="door open" onclick="abrirSierraMorena()">
+                <img src="4_sierra_morena.png" alt="Sierra Morena">
+                <div class="door-name">Mejor de lo que imaginas</div>
+            </div>
+            <div class="door closed" onclick="mostrarMensajeCerrada()">
+                <img src="3_bilbo.png" alt="Bilbao">
+                <div class="door-name">Aquí escribes tu historia</div>
+            </div>
+            <div class="door closed" onclick="mostrarMensajeCerrada()">
+                <img src="5_algeciras.png" alt="Algeciras">
+                <div class="door-name">Tierra de abundancia</div>
+            </div>
+            <div class="door closed" onclick="mostrarMensajeCerrada()">
+                <img src="7_taigua.png" alt="Tangua">
+                <div class="door-name">El corazón de la montaña</div>
+            </div>
+            <div class="door closed" onclick="mostrarMensajeCerrada()">
+                <img src="1_buritica.png" alt="Buriticá">
+                <div class="door-name">El tesoro de Antioquia</div>
+            </div>
+            <div class="door closed" onclick="mostrarMensajeCerrada()">
+                <img src="6_comuna_seis.png" alt="Comuna Seis">
+                <div class="door-name">Territorio del buen vivir</div>
+            </div>
+            <div class="door closed" onclick="mostrarMensajeCerrada()">
+                <img src="2_necocli.png" alt="Necoclí">
+                <div class="door-name">Tú perteneces aquí</div>
+            </div>
+            <div class="door closed silhouette" onclick="mostrarMensajeCerrada()">
+                <div class="door-name">En proyección</div>
+            </div>
+        </div>
+
+        <div id="msg-cerrada">Esta puerta aún espera ser abierta.</div>
+
+        <footer>
+            <div class="social-links">
+                <a href="https://instagram.com/sierramorenatpb" target="_blank">IG</a>
+                <a href="https://tiktok.com/@sierra.morena43" target="_blank">TikTok</a>
+                <a href="https://linkedin.com/company/fundaciongruposocial" target="_blank">IN</a>
+                <a href="#" target="_blank">WA</a>
+            </div>
+            <div class="footer-center">Un universo de 8 territorios. Una sola misión.</div>
+            <button class="btn-alianzas" onclick="toggleAlianzas()">Alianzas</button>
+        </footer>
+
+        <div id="overlay-alianzas">
+            <button class="close-btn" onclick="toggleAlianzas()">✕</button>
+            <div class="alianzas-header">
+                <div class="icon-colmena">
+                    <img src="Simbolo empresarios-sin fondo.png" alt="Símbolo Colmena">
+                </div>
+                <h2>Sierra Morena tiene lo que su empresa está buscando</h2>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>250+</h3>
+                    <p>Personas con oficios técnicos calificados.</p>
+                </div>
+                <div class="stat-card">
+                    <h3>1,200</h3>
+                    <p>Personas beneficiadas por programas.</p>
+                </div>
+                <div class="stat-card">
+                    <h3>15</h3>
+                    <p>Años de presencia de la Fundación.</p>
+                </div>
+                <div class="stat-card">
+                    <h3>45</h3>
+                    <p>Emprendimientos activos.</p>
+                </div>
+            </div>
+
+            <div class="video-placeholder">
+                [Video Q&A Andrés y Juan Carlos]
+            </div>
+
+            <h3 style="color: var(--green); margin-bottom: 10px; font-family: var(--font-title);">¿Qué puede aportar su empresa?</h3>
+            <ul style="margin-bottom: 25px; padding-left: 20px; font-size: 0.9rem; line-height: 1.5; font-weight: 300;">
+                <li><strong>Talento:</strong> vincular personas a su cadena productiva.</li>
+                <li><strong>Conocimiento:</strong> capacitaciones técnicas.</li>
+                <li><strong>Visibilidad:</strong> comunique historias reales.</li>
+            </ul>
+
+            <form style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                <input type="text" placeholder="Nombre" style="padding: 12px; border: 1px solid var(--cream); background: transparent; color: var(--cream); border-radius: 5px;">
+                <input type="text" placeholder="Empresa" style="padding: 12px; border: 1px solid var(--cream); background: transparent; color: var(--cream); border-radius: 5px;">
+                <button type="button" class="cta-btn" style="border-radius: 5px;">Quiero saber más</button>
+            </form>
+            
+            <button class="cta-btn cta-btn-secondary" style="border-radius: 5px;" onclick="irA360DesdeAlianzas()">Conoce a Pilar y Carolina</button>
+        </div>
+    </div>
+
+    <div id="pantalla-2-video" class="screen">
+        <div class="close-video" onclick="cerrarVideoPaso2()">✕</div>
+        <div class="video-container">
+            <p>[Reproductor de Video Núcleo]</p>
+            <button onclick="cerrarVideoPaso2()" style="position:absolute; bottom: 25%; padding: 10px; cursor: pointer; font-family: var(--font-body); border-radius: 5px; background: var(--orange); border: none;">Simular Fin de Video</button>
+        </div>
+    </div>
+
+    <div id="pantalla-2-360" class="screen">
+        
+        <div class="bg-360-container">
+            <a-scene embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+                <a-assets>
+                    <video id="video-asset-360" src="Video360Calle.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
+                </a-assets>
+                
+                <a-videosphere src="#video-asset-360" rotation="0 -90 0"></a-videosphere>
+                
+                <a-entity camera look-controls="reverseMouseDrag: true"></a-entity>
+            </a-scene>
+        </div>
+        
+        <div class="floating-text">Estás en Sierra Morena. Mejor de lo que imaginas.</div>
+        <div class="hint-text">Puedes arrastrar para mirar alrededor. Abre una puerta.</div>
+
+        <div class="internal-doors">
+            <div class="person-door" id="door-pilar" onclick="abrirPilar()">
+                <div class="door-frame">
+                    <div class="door-text-block">
+                        <h3>Pilar</h3>
+                        <p>49 años. Emprendedora</p>
+                    </div>
+                </div>
+            </div>
+            <div class="person-door" id="door-carolina" onclick="abrirCarolina()">
+                <div class="door-frame">
+                    <div class="door-text-block">
+                        <h3>Carolina</h3>
+                        <p>Lideresa comunitaria</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pantalla-3a" class="screen interior-screen">
+        <button class="btn-volver" onclick="volverA360()">← Volver a la calle</button>
+        <div class="content-grid">
+            <div class="simbolo-bg">
+                <img src="Simbolo nosotros-sin fondo.png" alt="Símbolo Brillo">
+            </div>
+            
+            <div class="main-column">
+                <div class="media-block">
+                    [Video retrato de Pilar]
+                </div>
+            </div>
+            <div class="info-block">
+                <h1>Pilar, 49 años.</h1>
+                <p>Emprendedora incansable de Sierra Morena. Fundadora de "Bebitos Comfort". Con el acompañamiento de la Fundación Grupo Social, Pilar transformó su taller en casa en un negocio estructurado que hoy genera empleo para tres mujeres más del barrio.</p>
+                
+                <div class="action-card">
+                    <h3>¿Quieres conocer Sierra Morena en persona?</h3>
+                    <a href="#" class="btn-action">Visita la exposición fotográfica</a>
+                </div>
+
+                <div class="social-follow">
+                    <p style="font-size: 0.9rem;">Sigue la historia:</p>
+                    <a href="#">Instagram @sierramorenatpb</a>
+                    <a href="#">TikTok @sierra.morena43</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pantalla-3b" class="screen interior-screen">
+        <button class="btn-volver" onclick="volverA360()">← Volver a la calle</button>
+        <div class="content-grid">
+            <div class="simbolo-bg">
+                <img src="Simbolo comunidad-sin fondo.png" alt="Símbolo Sol">
+            </div>
+
+            <div class="main-column">
+                <div class="media-block" style="background: var(--blue); flex-direction: column;">
+                    <h2 style="font-family: var(--font-title); margin-bottom: 20px; color: var(--cream);">Episodio 1: La fuerza del barrio</h2>
+                    <p>[Reproductor de Audio Embebido]</p>
+                </div>
+            </div>
+            <div class="info-block">
+                <h1>Carolina, Lideresa.</h1>
+                <p>35 años tejiendo lazos. Carolina lidera tres frentes en la comunidad: deportivo, educativo y rescate animal. A través del trabajo conjunto con la Fundación, ha logrado canalizar recursos para construir canchas y organizar talleres extracurriculares.</p>
+                
+                <div class="action-card">
+                    <h3>¿Lideras una causa en tu comunidad?</h3>
+                    <a href="#" class="btn-action">Súmate a los Bootcamps</a>
+                </div>
+
+                <div class="social-follow">
+                    <p style="font-size: 0.9rem;">Sigue la historia:</p>
+                    <a href="#">Instagram @sierramorenatpb</a>
+                    <a href="#">TikTok @sierra.morena43</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let homeVisitado = false;
+        setTimeout(() => {
+            document.getElementById('pantalla-0').classList.remove('active');
+            document.getElementById('pantalla-1').classList.add('active');
+        }, 3000);
+
+        function mostrarMensajeCerrada() {
+            const msg = document.getElementById('msg-cerrada');
+            msg.style.opacity = '1';
+            setTimeout(() => msg.style.opacity = '0', 2500);
+        }
+
+        function toggleAlianzas() {
+            document.getElementById('overlay-alianzas').classList.toggle('active');
+        }
+
+        function abrirSierraMorena() {
+            document.getElementById('pantalla-1').classList.remove('active');
+            document.getElementById('pantalla-2-video').classList.add('active');
+        }
+
+        function cerrarVideoPaso2() {
+            document.getElementById('pantalla-2-video').classList.remove('active');
+            document.getElementById('pantalla-2-360').classList.add('active');
+            
+            // Fuerza la reproducción del video 360 al abrir la pantalla
+            const video360 = document.getElementById('video-asset-360');
+            if(video360) {
+                video360.play();
+            }
+            
+            // Resuelve un bug común de A-Frame donde no ajusta el tamaño al aparecer de un display:none
+            window.dispatchEvent(new Event('resize'));
+        }
+
+        function irA360DesdeAlianzas() {
+            toggleAlianzas();
+            document.getElementById('pantalla-1').classList.remove('active');
+            document.getElementById('pantalla-2-360').classList.add('active');
+            
+            const video360 = document.getElementById('video-asset-360');
+            if(video360) video360.play();
+            window.dispatchEvent(new Event('resize'));
+        }
+
+        function abrirPilar() {
+            document.getElementById('pantalla-2-360').classList.remove('active');
+            document.getElementById('pantalla-3a').classList.add('active');
+        }
+
+        function abrirCarolina() {
+            document.getElementById('pantalla-2-360').classList.remove('active');
+            document.getElementById('pantalla-3b').classList.add('active');
+        }
+
+        function volverA360() {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById('pantalla-2-360').classList.add('active');
+            actualizarProgreso();
+            
+            const video360 = document.getElementById('video-asset-360');
+            if(video360) video360.play();
+            window.dispatchEvent(new Event('resize'));
+        }
+
+        function volverAlHome() {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById('pantalla-1').classList.add('active');
+            actualizarProgreso();
+        }
+
+        function actualizarProgreso() {
+            if(!homeVisitado) {
+                document.getElementById('progress-text').innerText = "Has abierto 1 de 8 territorios";
+                homeVisitado = true;
+            }
+        }
+    </script>
+</body>
+</html>
