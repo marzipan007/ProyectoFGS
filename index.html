@@ -32,11 +32,10 @@
         }
         .screen.active { display: flex; opacity: 1; }
 
-        /* === NUEVO: CONTENEDOR 360 GLOBAL === */
-        /* Se coloca por debajo de las pantallas pero fuera del display:none para evitar bugs de 0x0 px */
+        /* === CONTENEDOR 360 GLOBAL === */
         #contenedor-360 {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 1; opacity: 0; pointer-events: none; /* Desactivado por defecto */
+            z-index: 1; opacity: 0; pointer-events: none; 
             transition: opacity 0.8s ease-in-out;
         }
 
@@ -51,7 +50,11 @@
         #pantalla-0 h1 { font-family: var(--font-title); font-size: 1.8rem; max-width: 600px; padding: 20px; line-height: 1.4; color: var(--cream);}
 
         /* === PANTALLA 1: HOME === */
-        #pantalla-1 { background-color: #111; z-index: 20; } /* Z-index mayor para tapar el 360 */
+        /* CORREGIDO: Se eliminó fondo-home.jpg y se usa un degradado CSS elegante */
+        #pantalla-1 { 
+            background: linear-gradient(135deg, #111a24 0%, #05080c 100%); 
+            z-index: 20; 
+        }
         
         header { display: flex; justify-content: space-between; padding: 30px 50px; z-index: 20; align-items: center; position: relative;}
         
@@ -150,9 +153,9 @@
         #pantalla-2-360 { 
             justify-content: center; align-items: center; 
             position: relative; overflow: hidden;
-            background: transparent !important; /* Para que deje ver el 360 de fondo */
+            background: transparent !important; 
             perspective: 2000px;
-            pointer-events: none; /* Crucial: los clics "traspasan" esta capa para poder rotar el 360 */
+            pointer-events: none; 
         }
 
         .floating-text { 
@@ -172,7 +175,7 @@
             width: 30vw; max-width: 400px;
             text-align: center; cursor: pointer; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
             background: none; border: none;
-            pointer-events: auto; /* Reactiva los clics solo sobre la puerta */
+            pointer-events: auto; 
         }
 
         .door-frame {
@@ -212,7 +215,7 @@
         .hint-text { position: absolute; bottom: 90px; font-size: 0.95rem; color: var(--cream); font-family: var(--font-body); background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; z-index: 20; pointer-events: none;}
 
         /* === PANTALLAS 3A y 3B: INTERIOR === */
-        .interior-screen { padding: 40px 10vw; overflow-y: auto; z-index: 20; } /* Z-index mayor para tapar el 360 */
+        .interior-screen { padding: 40px 10vw; overflow-y: auto; z-index: 20; } 
         
         #pantalla-3a { background-color: var(--cream); color: var(--blue); }
         #pantalla-3a .btn-volver { color: var(--blue); }
@@ -248,7 +251,7 @@
     <div id="contenedor-360">
         <a-scene embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
             <a-assets>
-                <video id="video-asset-360" src="https://github.com/marzipan007/ProyectoFGS/releases/download/v1.0/Video360Calle.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
+                <video id="video-asset-360" src="Video360Calle.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
             </a-assets>
             <a-videosphere src="#video-asset-360" rotation="0 -90 0"></a-videosphere>
             <a-entity camera look-controls="reverseMouseDrag: true"></a-entity>
@@ -260,7 +263,7 @@
         <h1>Hay lugares en Colombia donde el futuro llegó tarde.<br>Estos son algunos de ellos.</h1>
     </div>
 
-    <div id="pantalla-1" class="screen" style="background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('fondo-home.jpg') center/cover;">
+    <div id="pantalla-1" class="screen">
         <header>
             <a href="https://www.fundaciongruposocial.co/" target="_blank" class="logo-fgs">
                 <img src="logo_fgs.png" alt="Fundación Grupo Social">
@@ -485,7 +488,7 @@
         function activar360() {
             const cont360 = document.getElementById('contenedor-360');
             cont360.style.opacity = '1';
-            cont360.style.pointerEvents = 'auto'; // Habilita los clics en el video
+            cont360.style.pointerEvents = 'auto'; 
             
             const video360 = document.getElementById('video-asset-360');
             if(video360) video360.play();
@@ -494,7 +497,7 @@
         function desactivar360() {
             const cont360 = document.getElementById('contenedor-360');
             cont360.style.opacity = '0';
-            cont360.style.pointerEvents = 'none'; // Deshabilita clics para que no estorbe
+            cont360.style.pointerEvents = 'none'; 
         }
 
         function cerrarVideoPaso2() {
@@ -513,7 +516,7 @@
         function abrirPilar() {
             document.getElementById('pantalla-2-360').classList.remove('active');
             document.getElementById('pantalla-3a').classList.add('active');
-            desactivar360(); // Lo ocultamos para que no afecte el rendimiento al estar en el interior
+            desactivar360(); 
         }
 
         function abrirCarolina() {
