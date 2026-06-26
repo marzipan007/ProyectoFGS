@@ -148,7 +148,7 @@
         .video-container { width: 80%; max-width: 900px; height: 60vh; background: #000; border: 2px solid var(--cream); display: flex; justify-content: center; align-items: center;}
         .close-video { position: absolute; top: 30px; right: 40px; color: var(--cream); font-size: 2rem; cursor: pointer; }
 
-        /* === PANTALLA 2: INMERSIÓN VIDEO CALLE === */
+        /* === PANTALLA 2: INMERSIÓN IMAGEN CALLE === */
         #pantalla-2-360 { 
             justify-content: center; align-items: center; 
             position: relative; overflow: hidden;
@@ -250,9 +250,11 @@
     <div id="contenedor-360">
         <a-scene embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
             <a-assets>
-                <video id="video-asset-360" src="https://vjs.zencdn.net/v/oceans.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
+                <img id="imagen-asset-360" src="Calle360foto.jpg">
+                <audio id="audio-asset-360" src="audioCalle.mp3" loop></audio>
             </a-assets>
-            <a-videosphere src="#video-asset-360" rotation="0 -90 0"></a-videosphere>
+            
+            <a-sky src="#imagen-asset-360" rotation="0 -90 0"></a-sky>
             <a-entity camera look-controls="reverseMouseDrag: true"></a-entity>
         </a-scene>
     </div>
@@ -482,21 +484,22 @@
             document.getElementById('pantalla-2-video').classList.add('active');
         }
 
+        // CONTROL ACTUALIZADO: Maneja la visibilidad de la foto e inicia la reproducción del sonido ambiente
         function activar360() {
             const cont360 = document.getElementById('contenedor-360');
             cont360.style.opacity = '1';
             cont360.style.pointerEvents = 'auto'; 
             
-            const video360 = document.getElementById('video-asset-360');
-            if (video360) {
-                // Truco de interacción forzada para Mac/Chrome en entornos 3D
-                var playPromise = video360.play();
+            const audio360 = document.getElementById('audio-asset-360');
+            if (audio360) {
+                var playPromise = audio360.play();
                 if (playPromise !== undefined) {
                     playPromise.then(_ => {
-                        console.log("Video interactivo listo.");
+                        console.log("Audio ambiente reproduciéndose.");
                     }).catch(error => {
+                        // El navegador bloqueó la reproducción automática; se activa al primer clic del usuario
                         document.addEventListener('click', function fn() {
-                            video360.play();
+                            audio360.play();
                             document.removeEventListener('click', fn);
                         });
                     });
@@ -509,8 +512,8 @@
             cont360.style.opacity = '0';
             cont360.style.pointerEvents = 'none'; 
             
-            const video360 = document.getElementById('video-asset-360');
-            if(video360) video360.pause();
+            const audio360 = document.getElementById('audio-asset-360');
+            if(audio360) audio360.pause();
         }
 
         function cerrarVideoPaso2() {
@@ -538,7 +541,6 @@
             desactivar360();
         }
 
-        // Fix de refresco para asegurar el render de las texturas en A-Frame
         function volverA360() {
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
             document.getElementById('pantalla-2-360').classList.add('active');
