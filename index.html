@@ -153,7 +153,7 @@
             justify-content: center; align-items: center; 
             position: relative; overflow: hidden;
             background: transparent !important; 
-            pointer-events: none; /* Los clics pasan a la escena 3D */
+            pointer-events: none; 
         }
 
         .floating-text { 
@@ -195,6 +195,56 @@
         .social-follow a { display: block; color: inherit; text-decoration: none; margin-top: 8px; font-weight: bold;}
 
     </style>
+    
+    <script>
+        AFRAME.registerComponent('flip-card-3d', {
+            schema: {
+                frontTex: {type: 'string'},
+                backTex: {type: 'string'}
+            },
+            init: function () {
+                var el = this.el;
+                var data = this.data;
+                var isFlipped = false;
+
+                el.addEventListener('mouseenter', function () {
+                    if (!isFlipped) {
+                        isFlipped = true;
+                        // Primera mitad del giro (esconder frente)
+                        el.removeAttribute('animation__leave');
+                        el.setAttribute('animation__enter', {
+                            property: 'rotation',
+                            to: '0 135 0', // Ajustado considerando la rotación inicial base de 45 grados
+                            dur: 300,
+                            easing: 'easeInQuad'
+                        });
+                        
+                        setTimeout(function() {
+                            el.setAttribute('src', data.backTex);
+                        }, 1500); // Sincronizado al punto medio del giro
+                    }
+                });
+
+                el.addEventListener('mouseleave', function () {
+                    if (isFlipped) {
+                        isFlipped = false;
+                        // Regresar al estado inicial de puerta
+                        el.removeAttribute('animation__enter');
+                        el.setAttribute('animation__leave', {
+                            property: 'rotation',
+                            to: el.getAttribute('data-init-rot'),
+                            dur: 300,
+                            easing: 'easeOutQuad'
+                        });
+                        
+                        setTimeout(function() {
+                            el.setAttribute('src', data.frontTex);
+                        }, 150);
+                    }
+                });
+            }
+        });
+    </script>
 </head>
 <body>
 
@@ -203,25 +253,30 @@
             <a-assets>
                 <img id="imagen-asset-360" src="Calle360foto.jpg">
                 <audio id="audio-asset-360" src="audioCalle.mp3" loop></audio>
-                <img id="textura-puerta" src="Simbolo principal puerta 5.png">
+                
+                <img id="puerta-nueva" src="Simbolo principal puerta 2.png">
+                <img id="retrato-pilar" src="ImagenPilar 2.jpg">
+                <img id="retrato-carolina" src="ImagenCarolina 2.jpg">
             </a-assets>
             
             <a-sky src="#imagen-asset-360" rotation="0 -90 0"></a-sky>
 
-            <a-image class="hotspot3d" src="#textura-puerta" 
+            <a-image class="hotspot3d" src="#puerta-nueva" 
                      position="-3.5 0.5 -3" 
                      scale="1.2 1.8 1"
                      rotation="0 45 0"
-                     onclick="abrirPilar()"
-                     animation="property: scale; to: 1.3 1.9 1; dir: alternate; dur: 1500; loop: true; easing: easeInOutQuad">
+                     data-init-rot="0 45 0"
+                     flip-card-33d="frontTex: #puerta-nueva; backTex: #retrato-pilar"
+                     onclick="abrirPilar()">
             </a-image>
 
-            <a-image class="hotspot3d" src="#textura-puerta" 
+            <a-image class="hotspot3d" src="#puerta-nueva" 
                      position="3.5 0.2 -3.5" 
                      scale="1.2 1.8 1"
                      rotation="0 -45 0"
-                     onclick="abrirCarolina()"
-                     animation="property: scale; to: 1.3 1.9 1; dir: alternate; dur: 1500; loop: true; easing: easeInOutQuad">
+                     data-init-rot="0 -45 0"
+                     flip-card-33d="frontTex: #puerta-nueva; backTex: #retrato-carolina"
+                     onclick="abrirCarolina()">
             </a-image>
 
             <a-entity camera look-controls="reverseMouseDrag: true">
@@ -485,7 +540,6 @@
             desactivar360(); 
         }
 
-        // Esta función ahora es llamada directamente por el botón flotante en la escena 3D
         function abrirCarolina() {
             document.getElementById('pantalla-2-360').classList.remove('active');
             document.getElementById('pantalla-3b').classList.add('active');
@@ -504,7 +558,7 @@
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
             document.getElementById('pantalla-1').classList.add('active');
             desactivar360();
-            actualisisProgreso();
+            actualizarProgreso();
         }
 
         function actualizarProgreso() {
