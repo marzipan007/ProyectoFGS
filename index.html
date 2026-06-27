@@ -19,7 +19,6 @@
             --orange: #ffbf77;
             --green: #b6e17a;
             
-            /* VARIABLES DE FUENTES ACTUALIZADAS */
             --font-title: "Fredoka", sans-serif;
             --font-body: "Roboto", sans-serif;
         }
@@ -51,7 +50,7 @@
             animation: pulse 1.5s infinite alternate; margin-bottom: 20px;
         }
         @keyframes pulse { from { box-shadow: 0 0 10px var(--orange); } to { box-shadow: 0 0 30px var(--orange), 0 0 10px inset var(--orange); } }
-        #pantalla-0 h1 { font-family: var(--font-title); font-size: 1.8rem; max-width: 600px; padding: 20px; line-height: 1.4; color: var(--cream); font-weight: 500;}
+        #pantalla-0 h1 { font-family: var(--font-title); font-size: 1.8rem; max-width: 600px; padding: 20px; line-height: 1.4; color: var(--cream);}
 
         /* === PANTALLA 1: HOME === */
         #pantalla-1 { 
@@ -61,6 +60,13 @@
         
         header { display: flex; justify-content: space-between; padding: 30px 50px; z-index: 20; align-items: center; position: relative;}
         
+        /* Título principal de la sección de territorios */
+        .main-title {
+            position: absolute; top: 30px; left: 50%; transform: translateX(-50%);
+            font-family: var(--font-title); font-size: 3rem; font-weight: 600;
+            color: var(--cream); z-index: 10; text-align: center; width: 100%;
+        }
+        
         .logo-fgs { 
             background-color: #d9e8f5; 
             padding: 8px 15px; 
@@ -68,14 +74,15 @@
             display: inline-flex;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             transition: transform 0.3s ease;
+            position: relative; z-index: 20;
         }
         .logo-fgs:hover { transform: scale(1.05); }
         .logo-fgs img { height: 45px; cursor: pointer; }
 
-        .progress-bar { font-family: var(--font-body); font-weight: 700; background: var(--blue); padding: 10px 20px; border: 1px solid var(--cream); color: var(--cream); border-radius: 5px; }
+        .progress-bar { font-family: var(--font-body); font-weight: 700; background: var(--blue); padding: 10px 20px; border: 1px solid var(--cream); color: var(--cream); border-radius: 5px; position: relative; z-index: 20; }
 
         .doors-container {
-            display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 40px; flex-grow: 1; padding: 20px; position: relative; z-index: 10;
+            display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 40px; flex-grow: 1; padding: 120px 20px 20px; position: relative; z-index: 10;
         }
 
         .door {
@@ -86,7 +93,7 @@
             transition: all 0.3s; padding: 15px; text-align: center;
         }
         .door img { max-width: 90%; max-height: 80px; object-fit: contain; margin-bottom: 10px; filter: grayscale(1) opacity(0.6); transition: all 0.3s;}
-        .door-name { font-family: var(--font-title); font-size: 0.95rem; font-weight: 500; opacity: 0; transition: opacity 0.3s; color: var(--cream); pointer-events: none;}
+        .door-name { font-family: var(--font-title); font-size: 0.95rem; opacity: 0; transition: opacity 0.3s; color: var(--cream); pointer-events: none;}
         
         .door.closed:hover { border-color: var(--green); animation: vibrate 0.2s linear infinite alternate; background: rgba(182, 225, 122, 0.1);}
         .door.closed:hover img { filter: grayscale(0) opacity(1); }
@@ -113,7 +120,12 @@
             display: flex; justify-content: space-between; align-items: center; padding: 20px 50px;
             background: var(--blue); border-top: 1px solid var(--cream); z-index: 20; position: relative;
         }
-        .social-links a { color: var(--cream); text-decoration: none; margin-right: 15px; font-weight: bold;}
+        
+        /* Contenedor de redes sociales modificado para logos */
+        .social-links { display: flex; gap: 15px; align-items: center; }
+        .social-links img { height: 25px; cursor: pointer; transition: transform 0.3s; }
+        .social-links img:hover { transform: scale(1.1); }
+        
         .footer-center { font-size: 0.9rem; color: var(--cream); font-family: var(--font-title); }
         .btn-alianzas {
             background: var(--cream); color: var(--blue); padding: 10px 20px; font-weight: bold; font-family: var(--font-body);
@@ -121,21 +133,21 @@
         }
         .btn-alianzas:hover { background: var(--orange); color: var(--blue); }
 
-        /* === PANTALLA 1B: OVERLAY ALIANZAS === */
-        #overlay-alianzas {
+        /* === OVERLAYS GENERALES === */
+        .overlay {
             position: fixed; top: 0; right: -100%; width: 500px; height: 100vh;
             background: var(--blue); color: var(--cream); z-index: 50;
             transition: right 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
             padding: 40px; overflow-y: auto; border-left: 2px solid var(--cream);
         }
-        #overlay-alianzas.active { right: 0; }
+        .overlay.active { right: 0; }
         .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--cream);}
         
+        /* === PANTALLA 1B: OVERLAY ALIANZAS === */
+        #overlay-alianzas h2 { font-family: var(--font-title); font-size: 2rem; line-height: 1.2; color: var(--cream); margin-bottom: 25px; }
         .alianzas-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
         .icon-colmena { width: 50px; height: auto; display: flex; justify-content: center; align-items: center; }
         .icon-colmena img { width: 100%; height: auto; }
-        
-        #overlay-alianzas h2 { font-family: var(--font-title); font-size: 2rem; line-height: 1.2; color: var(--cream);}
         
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 30px; }
         .stat-card { background: var(--blue); padding: 20px; border: 1px solid var(--cream); display: flex; flex-direction: column; justify-content: center;}
@@ -146,6 +158,24 @@
         
         .cta-btn { display: block; width: 100%; padding: 15px; background: var(--green); color: var(--blue); text-align: center; border: none; font-weight: bold; cursor: pointer; margin-bottom: 15px; font-family: var(--font-body);}
         .cta-btn-secondary { background: transparent; border: 1px solid var(--cream); color: var(--cream); }
+
+        /* === PANTALLA 1C: OVERLAY EXPO FOTO (PILAR) === */
+        #overlay-expo { background-color: var(--cream); color: var(--blue); border-left-color: var(--blue); }
+        #overlay-expo .close-btn { color: var(--blue); }
+        
+        #overlay-expo h2 { font-family: var(--font-title); font-size: 2rem; font-weight: 600; line-height: 1.2; color: var(--blue); margin-bottom: 25px; }
+        #overlay-expo p { font-family: var(--font-body); font-size: 1rem; line-height: 1.5; font-weight: 400; margin-bottom: 20px; color: var(--blue); }
+        #overlay-expo strong { font-weight: 700; color: var(--orange); }
+        
+        .qr-placeholder { width: 200px; height: 200px; margin: 30px auto; border: 2px solid var(--blue); display: flex; align-items: center; justify-content: center; }
+        .qr-placeholder img { width: 100%; height: auto; }
+
+        /* Botón discreto para activar expo */
+        .btn-ver-expo {
+            background-color: var(--orange); color: var(--blue); border: none; padding: 5px 10px; font-size: 0.8rem; font-weight: bold;
+            cursor: pointer; border-radius: 3px; position: absolute; bottom: 10px; right: 10px; transition: transform 0.3s ease;
+        }
+        .btn-ver-expo:hover { transform: scale(1.05); }
 
         /* === PANTALLA 2: VIDEO POPUP === */
         #pantalla-2-video { background: var(--blue); justify-content: center; align-items: center; z-index: 100;}
@@ -159,6 +189,16 @@
             background: transparent !important; 
             pointer-events: none; 
         }
+
+        /* Estilos de la mosquita y botón de vuelta en el 360 */
+        .hotspot-fgs { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; align-items: center; z-index: 20; pointer-events: auto; }
+        .mosquita-fgs { height: 35px; width: auto; opacity: 0.8; }
+        .btn-homepage {
+            background-color: var(--blue); color: var(--cream); border: 1px solid var(--cream);
+            padding: 8px 15px; font-size: 0.9rem; font-weight: bold; font-family: var(--font-body);
+            cursor: pointer; border-radius: 3px; transition: 0.3s;
+        }
+        .btn-homepage:hover { background-color: var(--orange); color: var(--blue); border-color: var(--blue); }
 
         .floating-text { 
             position: absolute; bottom: 30px; left: 30px; background: var(--blue); color: var(--cream); 
@@ -305,6 +345,7 @@
 
     <div id="pantalla-1" class="screen">
         <header>
+            <h1 class="main-title">La Puerta al Territorio</h1>
             <a href="https://www.fundaciongruposocial.co/" target="_blank" class="logo-fgs">
                 <img src="logo_fgs.png" alt="Fundación Grupo Social">
             </a>
@@ -315,6 +356,7 @@
             <div class="door open" onclick="abrirSierraMorena()">
                 <img src="4_sierra_morena.png" alt="Sierra Morena">
                 <div class="door-name">Mejor de lo que imaginas</div>
+                <button class="btn-ver-expo" onclick="event.stopPropagation(); toggleExpo()">Ver Expo</button>
             </div>
             <div class="door closed" onclick="mostrarMensajeCerrada()">
                 <img src="3_bilbo.png" alt="Bilbao">
@@ -349,16 +391,15 @@
 
         <footer>
             <div class="social-links">
-                <a href="https://instagram.com/sierramorenatpb" target="_blank">IG</a>
-                <a href="https://tiktok.com/@sierra.morena43" target="_blank">TikTok</a>
-                <a href="https://linkedin.com/company/fundaciongruposocial" target="_blank">IN</a>
-                <a href="#" target="_blank">WA</a>
-            </div>
+                <img src="logo_instagram.png" alt="Instagram" onclick="window.open('https://www.instagram.com/fundacion.gruposocial?igsh=MWZ1aXgwZWd0Zzl4eg%3D%3D', '_blank')">
+                <img src="logo_tiktok.png" alt="TikTok" onclick="window.open('https://www.tiktok.com/@abriendopuertasfgs?_r=1&_t=ZS-97YwNWjrKzM', '_blank')">
+                <img src="logo_linkedin.png" alt="LinkedIn" onclick="window.open('https://linkedin.com/company/fundaciongruposocial', '_blank')">
+                </div>
             <div class="footer-center">Un universo de 8 territorios. Una sola misión.</div>
             <button class="btn-alianzas" onclick="toggleAlianzas()">Alianzas</button>
         </footer>
 
-        <div id="overlay-alianzas">
+        <div id="overlay-alianzas" class="overlay">
             <button class="close-btn" onclick="toggleAlianzas()">✕</button>
             <div class="alianzas-header">
                 <div class="icon-colmena">
@@ -391,7 +432,7 @@
             </div>
 
             <h3 style="color: var(--green); margin-bottom: 10px; font-family: var(--font-title);">¿Qué puede aportar su empresa?</h3>
-            <ul style="margin-bottom: 25px; padding-left: 20px; font-size: 0.9rem; line-height: 1.5; font-weight: 300;">
+            <ul style="margin-bottom: 25px; padding-left: 20px; font-size: 0.9rem; line-height: 1.5; font-weight: 300; color: var(--cream);">
                 <li><strong>Talento:</strong> vincular personas a su cadena productiva.</li>
                 <li><strong>Conocimiento:</strong> capacitaciones técnicas.</li>
                 <li><strong>Visibilidad:</strong> comunique historias reales.</li>
@@ -405,6 +446,17 @@
             
             <button class="cta-btn cta-btn-secondary" style="border-radius: 5px;" onclick="irA360DesdeAlianzas()">Conoce a Pilar y Carolina</button>
         </div>
+
+        <div id="overlay-expo" class="overlay">
+            <button class="close-btn" onclick="toggleExpo()">✕</button>
+            <h2>Exposición fotográfica itinerante:<br>“Desde el corazón de Sierra Morena,<br>historias que construyen comunidad”</h2>
+            <p>¡Este <strong>Territorio Progresa</strong> baja hasta la Universidad de La Sabana!</p>
+            <p>Si quieres vivir esta experiencia y conocer lo que hay detrás de la puerta de Sierra Morena, te invitamos a escanear este código QR.</p>
+            <div class="qr-placeholder">
+                <img src="codigo_qr_expo.png" alt="Código QR de la Exposición">
+            </div>
+            <button class="cta-btn" style="background-color: var(--blue); color: var(--cream); border-radius: 5px;" onclick="toggleExpo()">Entendido</button>
+        </div>
     </div>
 
     <div id="pantalla-2-video" class="screen">
@@ -416,6 +468,10 @@
     </div>
 
     <div id="pantalla-2-360" class="screen">
+        <div class="hotspot-fgs">
+            <img src="logo_fgs.png" alt="Logo Fundación" class="mosquita-fgs">
+            <button class="btn-homepage" onclick="volverAHomepage()">Volver a Territorios</button>
+        </div>
         <div class="floating-text">Estás en Sierra Morena. Mejor de lo que imaginas.</div>
         <div class="hint-text">Gira la cámara, busca las puertas flotantes y pon el cursor sobre ellas.</div>
     </div>
@@ -498,6 +554,11 @@
         function toggleAlianzas() {
             document.getElementById('overlay-alianzas').classList.toggle('active');
         }
+        
+        // Nueva función para toggle del pop-up de la expo de foto
+        function toggleExpo() {
+            document.getElementById('overlay-expo').classList.toggle('active');
+        }
 
         function abrirSierraMorena() {
             document.getElementById('pantalla-1').classList.remove('active');
@@ -565,6 +626,16 @@
             activar360();
             actualizarProgreso();
             window.dispatchEvent(new Event('resize'));
+        }
+        
+        // Nueva función para el botón de vuelta al homepage en el 360
+        function volverAHomepage() {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById('pantalla-1').classList.add('active');
+            desactivar360();
+            // Asegurarse de que el pop-up de la expo esté cerrado al volver
+            document.getElementById('overlay-expo').classList.remove('active');
+            actualizarProgreso();
         }
 
         function volverAlHome() {
