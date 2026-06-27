@@ -170,12 +170,12 @@
         .qr-placeholder { width: 200px; height: 200px; margin: 30px auto; border: 2px solid var(--blue); display: flex; align-items: center; justify-content: center; }
         .qr-placeholder img { width: 100%; height: auto; }
 
-        /* Botón discreto para activar expo */
-        .btn-ver-expo {
+        /* Botón discreto para activar expo en la tarjeta de la puerta */
+        .btn-ver-expo-door {
             background-color: var(--orange); color: var(--blue); border: none; padding: 5px 10px; font-size: 0.8rem; font-weight: bold;
             cursor: pointer; border-radius: 3px; position: absolute; bottom: 10px; right: 10px; transition: transform 0.3s ease;
         }
-        .btn-ver-expo:hover { transform: scale(1.05); }
+        .btn-ver-expo-door:hover { transform: scale(1.05); }
 
         /* === PANTALLA 2: VIDEO POPUP === */
         #pantalla-2-video { background: var(--blue); justify-content: center; align-items: center; z-index: 100;}
@@ -356,7 +356,7 @@
             <div class="door open" onclick="abrirSierraMorena()">
                 <img src="4_sierra_morena.png" alt="Sierra Morena">
                 <div class="door-name">Mejor de lo que imaginas</div>
-                <button class="btn-ver-expo" onclick="event.stopPropagation(); toggleExpo()">Ver Expo</button>
+                <button class="btn-ver-expo-door" onclick="event.stopPropagation(); toggleExpo()">Ver Expo</button>
             </div>
             <div class="door closed" onclick="mostrarMensajeCerrada()">
                 <img src="3_bilbo.png" alt="Bilbao">
@@ -391,10 +391,10 @@
 
         <footer>
             <div class="social-links">
-                <img src="logo_instagram.png" alt="Instagram" onclick="window.open('https://www.instagram.com/fundacion.gruposocial?igsh=MWZ1aXgwZWd0Zzl4eg%3D%3D', '_blank')">
-                <img src="logo_tiktok.png" alt="TikTok" onclick="window.open('https://www.tiktok.com/@abriendopuertasfgs?_r=1&_t=ZS-97YwNWjrKzM', '_blank')">
-                <img src="logo_linkedin.png" alt="LinkedIn" onclick="window.open('https://linkedin.com/company/fundaciongruposocial', '_blank')">
-                </div>
+                <img src="instagram.png" alt="Instagram" onclick="window.open('https://instagram.com/sierramorenatpb', '_blank')">
+                <img src="tiktok.png" alt="TikTok" onclick="window.open('https://tiktok.com/@sierra.morena43', '_blank')">
+                <img src="linkednnn.png" alt="LinkedIn" onclick="window.open('https://linkedin.com/company/fundaciongruposocial', '_blank')">
+            </div>
             <div class="footer-center">Un universo de 8 territorios. Una sola misión.</div>
             <button class="btn-alianzas" onclick="toggleAlianzas()">Alianzas</button>
         </footer>
@@ -453,7 +453,7 @@
             <p>¡Este <strong>Territorio Progresa</strong> baja hasta la Universidad de La Sabana!</p>
             <p>Si quieres vivir esta experiencia y conocer lo que hay detrás de la puerta de Sierra Morena, te invitamos a escanear este código QR.</p>
             <div class="qr-placeholder">
-                <img src="codigo_qr_expo.png" alt="Código QR de la Exposición">
+                <img src="QRcode.png" alt="Código QR de la Exposición">
             </div>
             <button class="cta-btn" style="background-color: var(--blue); color: var(--cream); border-radius: 5px;" onclick="toggleExpo()">Entendido</button>
         </div>
@@ -494,7 +494,7 @@
                 
                 <div class="action-card">
                     <h3>¿Quieres conocer Sierra Morena en persona?</h3>
-                    <a href="#" class="btn-action">Visita la exposición fotográfica</a>
+                    <a href="#" class="btn-action" onclick="event.preventDefault(); toggleExpo()">Visita la exposición fotográfica</a>
                 </div>
 
                 <div class="social-follow">
