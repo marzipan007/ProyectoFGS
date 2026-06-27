@@ -172,10 +172,10 @@
 
         /* === PANTALLA 2: VIDEO POPUP === */
         #pantalla-2-video { background: var(--blue); justify-content: center; align-items: center; z-index: 100;}
-        .video-container { width: 80%; max-width: 900px; height: 60vh; background: #000; border: 2px solid var(--cream); display: flex; justify-content: center; align-items: center;}
+        .video-container { width: 80%; max-width: 900px; height: 60vh; background: transparent; display: flex; justify-content: center; align-items: center;}
         
-        /* Estilos para el video de introducción */
-        .video-container video { width: 100%; height: 100%; object-fit: contain; }
+        /* Video nativo sin forzar tamaños */
+        .video-container video { max-width: 100%; max-height: 100%; }
         .close-video { position: absolute; top: 30px; right: 40px; color: var(--cream); font-size: 2rem; cursor: pointer; }
 
         /* === PANTALLA 2: INTERFAZ HUD 2D SOBRE EL 360 === */
@@ -222,9 +222,9 @@
         .simbolo-bg { position: absolute; top: -20px; right: -20px; width: 100px; height: auto; display: flex; justify-content: center; align-items: center; } 
         .simbolo-bg img { width: 100%; height: auto; } 
         
-        .media-block { background: #000; height: 450px; border: 1px solid var(--blue); display: flex; justify-content: center; align-items: center; color: var(--cream); overflow: hidden; border-radius: 10px;}
-        /* Estilos para el video del retrato de Pilar */
-        .media-block video { width: 100%; height: 100%; object-fit: cover; }
+        .media-block { background: transparent; display: flex; justify-content: center; align-items: center; overflow: hidden; border-radius: 10px;}
+        /* Video nativo sin forzar tamaños ni fondos fijos artificiales */
+        .media-block video { max-width: 100%; max-height: 100%; }
 
         .info-block h1 { font-family: var(--font-title); font-size: 3rem; margin-bottom: 20px;}
         .info-block p { font-size: 1.1rem; line-height: 1.6; margin-bottom: 30px; font-weight: 300;}
@@ -554,11 +554,10 @@
             document.getElementById('pantalla-1').classList.remove('active');
             document.getElementById('pantalla-2-video').classList.add('active');
             
-            // Intenta reproducir automáticamente el video de introducción al abrir la pantalla
             const videoIntro = document.getElementById('video-intro-file');
             if(videoIntro) {
                 videoIntro.currentTime = 0;
-                videoIntro.play().catch(e => console.log("La autoreproducción requiere interacción previa del usuario."));
+                videoIntro.play().catch(e => console.log("La autoreproducción requiere interacción previa."));
             }
         }
 
@@ -593,7 +592,6 @@
         }
 
         function cerrarVideoPaso2() {
-            // Pausa el video de intro por si acaso se cerró manualmente antes de terminar
             const videoIntro = document.getElementById('video-intro-file');
             if(videoIntro) videoIntro.pause();
 
@@ -622,7 +620,6 @@
         }
 
         function volverA360() {
-            // Pausa el video de Pilar si el usuario decide volver a la calle
             const videoPilar = document.getElementById('video-pilar-file');
             if(videoPilar) videoPilar.pause();
 
