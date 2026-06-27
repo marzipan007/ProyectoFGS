@@ -404,7 +404,7 @@
             <img src="logo_fgs.png" alt="Logo Fundación" class="mosquita-fgs">
             <button class="btn-homepage" onclick="volverAHomepage()">Volver a Territorios</button>
         </div>
-        <div class="floating-text">Estás en Sierra Morena, mejor de lo que imaginas.</div>
+        <div class="floating-text">Estás en Sierra Morena. Mejor de lo que imaginas.</div>
         <div class="hint-text">Gira la cámara, busca las puertas flotantes y pon el cursor sobre ellas.</div>
     </div>
 
@@ -446,9 +446,8 @@
             </div>
 
             <div class="main-column">
-                <div class="media-block" style="background: var(--blue); flex-direction: column;">
-                    <h2 style="font-family: var(--font-title); margin-bottom: 20px; color: var(--cream);">Episodio 1: La fuerza del barrio</h2>
-                    <p>[Reproductor de Audio Embebido]</p>
+                <div class="media-block">
+                    <video id="video-carolina-file" src="VideoCarolina.mp4" controls></video>
                 </div>
             </div>
             <div class="info-block">
@@ -520,7 +519,7 @@
     <div id="overlay-expo" class="overlay">
         <button class="close-btn" onclick="toggleExpo()">✕</button>
         <h2>Exposición fotográfica itinerante:<br>“Desde el corazón de Sierra Morena,<br>historias que construyen comunidad”</h2>
-        <p>¡Este <strong>Territorio Progreso</strong> baja hasta la Universidad de La Sabana!</p>
+        <p>¡Este <strong>Territorio Progresa</strong> baja hasta la Universidad de La Sabana!</p>
         <p>Si quieres vivir esta experiencia y conocer lo que hay detrás de la puerta de Sierra Morena, te invitamos a escanear este código QR.</p>
         <div class="qr-placeholder">
             <img src="QRcode.png" alt="Código QR de la Exposición">
@@ -622,6 +621,9 @@
         function volverA360() {
             const videoPilar = document.getElementById('video-pilar-file');
             if(videoPilar) videoPilar.pause();
+
+            const videoCarolina = document.getElementById('video-carolina-file');
+            if(videoCarolina) videoCarolina.pause();
 
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
             document.getElementById('pantalla-2-360').classList.add('active');
