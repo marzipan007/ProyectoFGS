@@ -154,7 +154,7 @@
         .stat-card h3 { font-size: 2rem; color: var(--green); font-family: var(--font-title); margin-bottom: 5px;}
         .stat-card p { font-size: 0.85rem; line-height: 1.3; font-weight: 300; }
         
-        .video-placeholder { width: 100%; height: 200px; border: 1px solid var(--cream); display: flex; align-items: center; justify-content: center; margin-bottom: 25px;}
+        .video-placeholder { width: 100%; height: auto; display: flex; align-items: center; justify-content: center; margin-bottom: 25px;}
         
         .cta-btn { display: block; width: 100%; padding: 15px; background: var(--green); color: var(--blue); text-align: center; border: none; font-weight: bold; cursor: pointer; margin-bottom: 15px; font-family: var(--font-body);}
         .cta-btn-secondary { background: transparent; border: 1px solid var(--cream); color: var(--cream); }
@@ -173,6 +173,9 @@
         /* === PANTALLA 2: VIDEO POPUP === */
         #pantalla-2-video { background: var(--blue); justify-content: center; align-items: center; z-index: 100;}
         .video-container { width: 80%; max-width: 900px; height: 60vh; background: #000; border: 2px solid var(--cream); display: flex; justify-content: center; align-items: center;}
+        
+        /* Estilos para el video de introducción */
+        .video-container video { width: 100%; height: 100%; object-fit: contain; }
         .close-video { position: absolute; top: 30px; right: 40px; color: var(--cream); font-size: 2rem; cursor: pointer; }
 
         /* === PANTALLA 2: INTERFAZ HUD 2D SOBRE EL 360 === */
@@ -220,6 +223,9 @@
         .simbolo-bg img { width: 100%; height: auto; } 
         
         .media-block { background: #000; height: 450px; border: 1px solid var(--blue); display: flex; justify-content: center; align-items: center; color: var(--cream); overflow: hidden; border-radius: 10px;}
+        /* Estilos para el video del retrato de Pilar */
+        .media-block video { width: 100%; height: 100%; object-fit: cover; }
+
         .info-block h1 { font-family: var(--font-title); font-size: 3rem; margin-bottom: 20px;}
         .info-block p { font-size: 1.1rem; line-height: 1.6; margin-bottom: 30px; font-weight: 300;}
         
@@ -343,7 +349,7 @@
             <div class="door open" onclick="abrirSierraMorena()">
                 <img src="4_sierra_morena.png" alt="Sierra Morena">
                 <div class="door-name">Mejor de lo que imaginas</div>
-                </div>
+            </div>
             <div class="door closed" onclick="mostrarMensajeCerrada()">
                 <img src="3_bilbo.png" alt="Bilbao">
                 <div class="door-name">Aquí escribes tu historia</div>
@@ -389,8 +395,7 @@
     <div id="pantalla-2-video" class="screen">
         <div class="close-video" onclick="cerrarVideoPaso2()">✕</div>
         <div class="video-container">
-            <p>[Reproductor de Video Núcleo]</p>
-            <button onclick="cerrarVideoPaso2()" style="position:absolute; bottom: 25%; padding: 10px; cursor: pointer; font-family: var(--font-body); border-radius: 5px; background: var(--orange); border: none;">Simular Fin de Video</button>
+            <video id="video-intro-file" src="VideoIntro.mp4" controls autoplay onended="cerrarVideoPaso2()"></video>
         </div>
     </div>
 
@@ -412,7 +417,7 @@
             
             <div class="main-column">
                 <div class="media-block">
-                    [Video retrato de Pilar]
+                    <video id="video-pilar-file" src="videoPilar.mp4" controls></video>
                 </div>
             </div>
             <div class="info-block">
@@ -493,7 +498,7 @@
         </div>
 
         <div class="video-placeholder">
-            [Video Q&A Andrés y Juan Carlos]
+            <img src="alianzas.jpeg" alt="Alianzas Sierra Morena" style="width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--cream);">
         </div>
 
         <h3 style="color: var(--green); margin-bottom: 10px; font-family: var(--font-title);">¿Qué puede aportar su empresa?</h3>
@@ -548,6 +553,13 @@
         function abrirSierraMorena() {
             document.getElementById('pantalla-1').classList.remove('active');
             document.getElementById('pantalla-2-video').classList.add('active');
+            
+            // Intenta reproducir automáticamente el video de introducción al abrir la pantalla
+            const videoIntro = document.getElementById('video-intro-file');
+            if(videoIntro) {
+                videoIntro.currentTime = 0;
+                videoIntro.play().catch(e => console.log("La autoreproducción requiere interacción previa del usuario."));
+            }
         }
 
         function activar360() {
@@ -581,6 +593,10 @@
         }
 
         function cerrarVideoPaso2() {
+            // Pausa el video de intro por si acaso se cerró manualmente antes de terminar
+            const videoIntro = document.getElementById('video-intro-file');
+            if(videoIntro) videoIntro.pause();
+
             document.getElementById('pantalla-2-video').classList.remove('active');
             document.getElementById('pantalla-2-360').classList.add('active');
             activar360();
@@ -606,6 +622,10 @@
         }
 
         function volverA360() {
+            // Pausa el video de Pilar si el usuario decide volver a la calle
+            const videoPilar = document.getElementById('video-pilar-file');
+            if(videoPilar) videoPilar.pause();
+
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
             document.getElementById('pantalla-2-360').classList.add('active');
             activar360();
