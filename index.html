@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fundación Grupo Social - Portal de Territorios</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     
@@ -16,8 +19,9 @@
             --orange: #ffbf77;
             --green: #b6e17a;
             
-            --font-title: 'Lora', 'CMU Serif', serif;
-            --font-body: 'Roboto', sans-serif;
+            /* VARIABLES DE FUENTES ACTUALIZADAS */
+            --font-title: "Fredoka", sans-serif;
+            --font-body: "Roboto", sans-serif;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -47,7 +51,7 @@
             animation: pulse 1.5s infinite alternate; margin-bottom: 20px;
         }
         @keyframes pulse { from { box-shadow: 0 0 10px var(--orange); } to { box-shadow: 0 0 30px var(--orange), 0 0 10px inset var(--orange); } }
-        #pantalla-0 h1 { font-family: var(--font-title); font-size: 1.8rem; max-width: 600px; padding: 20px; line-height: 1.4; color: var(--cream);}
+        #pantalla-0 h1 { font-family: var(--font-title); font-size: 1.8rem; max-width: 600px; padding: 20px; line-height: 1.4; color: var(--cream); font-weight: 500;}
 
         /* === PANTALLA 1: HOME === */
         #pantalla-1 { 
@@ -82,7 +86,7 @@
             transition: all 0.3s; padding: 15px; text-align: center;
         }
         .door img { max-width: 90%; max-height: 80px; object-fit: contain; margin-bottom: 10px; filter: grayscale(1) opacity(0.6); transition: all 0.3s;}
-        .door-name { font-family: var(--font-title); font-size: 0.95rem; opacity: 0; transition: opacity 0.3s; color: var(--cream); pointer-events: none;}
+        .door-name { font-family: var(--font-title); font-size: 0.95rem; font-weight: 500; opacity: 0; transition: opacity 0.3s; color: var(--cream); pointer-events: none;}
         
         .door.closed:hover { border-color: var(--green); animation: vibrate 0.2s linear infinite alternate; background: rgba(182, 225, 122, 0.1);}
         .door.closed:hover img { filter: grayscale(0) opacity(1); }
