@@ -121,7 +121,6 @@
             background: var(--blue); border-top: 1px solid var(--cream); z-index: 20; position: relative;
         }
         
-        /* Contenedor de redes sociales modificado para logos */
         .social-links { display: flex; gap: 15px; align-items: center; }
         .social-links img { height: 25px; cursor: pointer; transition: transform 0.3s; }
         .social-links img:hover { transform: scale(1.1); }
@@ -133,17 +132,18 @@
         }
         .btn-alianzas:hover { background: var(--orange); color: var(--blue); }
 
-        /* === OVERLAYS GENERALES === */
+        /* === OVERLAYS GENERALES (POP-UPS) === */
         .overlay {
             position: fixed; top: 0; right: -100%; width: 500px; height: 100vh;
-            background: var(--blue); color: var(--cream); z-index: 50;
+            background: var(--blue); color: var(--cream); 
+            z-index: 200; /* Asegura que flote por encima de TODAS las pantallas */
             transition: right 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
             padding: 40px; overflow-y: auto; border-left: 2px solid var(--cream);
         }
         .overlay.active { right: 0; }
         .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--cream);}
         
-        /* === PANTALLA 1B: OVERLAY ALIANZAS === */
+        /* OVERLAY ALIANZAS */
         #overlay-alianzas h2 { font-family: var(--font-title); font-size: 2rem; line-height: 1.2; color: var(--cream); margin-bottom: 25px; }
         .alianzas-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
         .icon-colmena { width: 50px; height: auto; display: flex; justify-content: center; align-items: center; }
@@ -159,7 +159,7 @@
         .cta-btn { display: block; width: 100%; padding: 15px; background: var(--green); color: var(--blue); text-align: center; border: none; font-weight: bold; cursor: pointer; margin-bottom: 15px; font-family: var(--font-body);}
         .cta-btn-secondary { background: transparent; border: 1px solid var(--cream); color: var(--cream); }
 
-        /* === PANTALLA 1C: OVERLAY EXPO FOTO (PILAR) === */
+        /* OVERLAY EXPO FOTO (PILAR) */
         #overlay-expo { background-color: var(--cream); color: var(--blue); border-left-color: var(--blue); }
         #overlay-expo .close-btn { color: var(--blue); }
         
@@ -169,13 +169,6 @@
         
         .qr-placeholder { width: 200px; height: 200px; margin: 30px auto; border: 2px solid var(--blue); display: flex; align-items: center; justify-content: center; }
         .qr-placeholder img { width: 100%; height: auto; }
-
-        /* Botón discreto para activar expo en la tarjeta de la puerta */
-        .btn-ver-expo-door {
-            background-color: var(--orange); color: var(--blue); border: none; padding: 5px 10px; font-size: 0.8rem; font-weight: bold;
-            cursor: pointer; border-radius: 3px; position: absolute; bottom: 10px; right: 10px; transition: transform 0.3s ease;
-        }
-        .btn-ver-expo-door:hover { transform: scale(1.05); }
 
         /* === PANTALLA 2: VIDEO POPUP === */
         #pantalla-2-video { background: var(--blue); justify-content: center; align-items: center; z-index: 100;}
@@ -190,7 +183,6 @@
             pointer-events: none; 
         }
 
-        /* Estilos de la mosquita y botón de vuelta en el 360 */
         .hotspot-fgs { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; align-items: center; z-index: 20; pointer-events: auto; }
         .mosquita-fgs { height: 35px; width: auto; opacity: 0.8; }
         .btn-homepage {
@@ -256,7 +248,6 @@
                     if (!isFlipped) {
                         isFlipped = true;
                         
-                        // Animación de la tarjeta interna (el contenedor no se mueve)
                         visibleCard.removeAttribute('animation__leave');
                         visibleCard.setAttribute('animation__enter', {
                             property: 'rotation',
@@ -265,7 +256,6 @@
                             easing: 'easeInOutQuad'
                         });
                         
-                        // A la mitad del giro, cambiar imagen y aplicar escala negativa para evitar efecto espejo
                         setTimeout(function() {
                             visibleCard.setAttribute('src', data.backTex);
                             visibleCard.setAttribute('scale', '-1.2 1.8 1');
@@ -277,7 +267,6 @@
                     if (isFlipped) {
                         isFlipped = false;
                         
-                        // Animación de regreso
                         visibleCard.removeAttribute('animation__enter');
                         visibleCard.setAttribute('animation__leave', {
                             property: 'rotation',
@@ -303,11 +292,9 @@
             <a-assets>
                 <img id="imagen-asset-360" src="Calle360foto.jpg">
                 <audio id="audio-asset-360" src="audioCalle.mp3" loop></audio>
-                
                 <img id="puerta-nueva" src="Simbolo principal puerta 2.png">
                 <img id="retrato-pilar" src="ImagenPilar 2.jpg">
                 <img id="retrato-carolina" src="ImagenCarolina 2.jpg">
-                
                 <img id="foto-fondo" src="fotofondo.png">
             </a-assets>
             
@@ -356,8 +343,7 @@
             <div class="door open" onclick="abrirSierraMorena()">
                 <img src="4_sierra_morena.png" alt="Sierra Morena">
                 <div class="door-name">Mejor de lo que imaginas</div>
-                <button class="btn-ver-expo-door" onclick="event.stopPropagation(); toggleExpo()">Ver Expo</button>
-            </div>
+                </div>
             <div class="door closed" onclick="mostrarMensajeCerrada()">
                 <img src="3_bilbo.png" alt="Bilbao">
                 <div class="door-name">Aquí escribes tu historia</div>
@@ -391,72 +377,13 @@
 
         <footer>
             <div class="social-links">
-                <img src="instagram.png" alt="Instagram" onclick="window.open('https://instagram.com/sierramorenatpb', '_blank')">
-                <img src="tiktok.png" alt="TikTok" onclick="window.open('https://tiktok.com/@sierra.morena43', '_blank')">
+                <img src="instagram.png" alt="Instagram" onclick="window.open('https://www.instagram.com/fundacion.gruposocial?igsh=MWZ1aXgwZWd0Zzl4eg==', '_blank')">
+                <img src="tiktok.png" alt="TikTok" onclick="window.open('https://www.tiktok.com/@abriendopuertasfgs?_r=1&_t=ZS-97YwNWjrKzM', '_blank')">
                 <img src="linkednnn.png" alt="LinkedIn" onclick="window.open('https://linkedin.com/company/fundaciongruposocial', '_blank')">
             </div>
             <div class="footer-center">Un universo de 8 territorios. Una sola misión.</div>
             <button class="btn-alianzas" onclick="toggleAlianzas()">Alianzas</button>
         </footer>
-
-        <div id="overlay-alianzas" class="overlay">
-            <button class="close-btn" onclick="toggleAlianzas()">✕</button>
-            <div class="alianzas-header">
-                <div class="icon-colmena">
-                    <img src="Simbolo empresarios-sin fondo.png" alt="Símbolo Colmena">
-                </div>
-                <h2>Sierra Morena tiene lo que su empresa está buscando</h2>
-            </div>
-            
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>250+</h3>
-                    <p>Personas con oficios técnicos calificados.</p>
-                </div>
-                <div class="stat-card">
-                    <h3>1,200</h3>
-                    <p>Personas beneficiadas por programas.</p>
-                </div>
-                <div class="stat-card">
-                    <h3>15</h3>
-                    <p>Años de presencia de la Fundación.</p>
-                </div>
-                <div class="stat-card">
-                    <h3>45</h3>
-                    <p>Emprendimientos activos.</p>
-                </div>
-            </div>
-
-            <div class="video-placeholder">
-                [Video Q&A Andrés y Juan Carlos]
-            </div>
-
-            <h3 style="color: var(--green); margin-bottom: 10px; font-family: var(--font-title);">¿Qué puede aportar su empresa?</h3>
-            <ul style="margin-bottom: 25px; padding-left: 20px; font-size: 0.9rem; line-height: 1.5; font-weight: 300; color: var(--cream);">
-                <li><strong>Talento:</strong> vincular personas a su cadena productiva.</li>
-                <li><strong>Conocimiento:</strong> capacitaciones técnicas.</li>
-                <li><strong>Visibilidad:</strong> comunique historias reales.</li>
-            </ul>
-
-            <form style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
-                <input type="text" placeholder="Nombre" style="padding: 12px; border: 1px solid var(--cream); background: transparent; color: var(--cream); border-radius: 5px;">
-                <input type="text" placeholder="Empresa" style="padding: 12px; border: 1px solid var(--cream); background: transparent; color: var(--cream); border-radius: 5px;">
-                <button type="button" class="cta-btn" style="border-radius: 5px;">Quiero saber más</button>
-            </form>
-            
-            <button class="cta-btn cta-btn-secondary" style="border-radius: 5px;" onclick="irA360DesdeAlianzas()">Conoce a Pilar y Carolina</button>
-        </div>
-
-        <div id="overlay-expo" class="overlay">
-            <button class="close-btn" onclick="toggleExpo()">✕</button>
-            <h2>Exposición fotográfica itinerante:<br>“Desde el corazón de Sierra Morena,<br>historias que construyen comunidad”</h2>
-            <p>¡Este <strong>Territorio Progresa</strong> baja hasta la Universidad de La Sabana!</p>
-            <p>Si quieres vivir esta experiencia y conocer lo que hay detrás de la puerta de Sierra Morena, te invitamos a escanear este código QR.</p>
-            <div class="qr-placeholder">
-                <img src="QRcode.png" alt="Código QR de la Exposición">
-            </div>
-            <button class="cta-btn" style="background-color: var(--blue); color: var(--cream); border-radius: 5px;" onclick="toggleExpo()">Entendido</button>
-        </div>
     </div>
 
     <div id="pantalla-2-video" class="screen">
@@ -537,6 +464,65 @@
         </div>
     </div>
 
+    <div id="overlay-alianzas" class="overlay">
+        <button class="close-btn" onclick="toggleAlianzas()">✕</button>
+        <div class="alianzas-header">
+            <div class="icon-colmena">
+                <img src="Simbolo empresarios-sin fondo.png" alt="Símbolo Colmena">
+            </div>
+            <h2>Sierra Morena tiene lo que su empresa está buscando</h2>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>250+</h3>
+                <p>Personas con oficios técnicos calificados.</p>
+            </div>
+            <div class="stat-card">
+                <h3>1,200</h3>
+                <p>Personas beneficiadas por programas.</p>
+            </div>
+            <div class="stat-card">
+                <h3>15</h3>
+                <p>Años de presencia de la Fundación.</p>
+            </div>
+            <div class="stat-card">
+                <h3>45</h3>
+                <p>Emprendimientos activos.</p>
+            </div>
+        </div>
+
+        <div class="video-placeholder">
+            [Video Q&A Andrés y Juan Carlos]
+        </div>
+
+        <h3 style="color: var(--green); margin-bottom: 10px; font-family: var(--font-title);">¿Qué puede aportar su empresa?</h3>
+        <ul style="margin-bottom: 25px; padding-left: 20px; font-size: 0.9rem; line-height: 1.5; font-weight: 300; color: var(--cream);">
+            <li><strong>Talento:</strong> vincular personas a su cadena productiva.</li>
+            <li><strong>Conocimiento:</strong> capacitaciones técnicas.</li>
+            <li><strong>Visibilidad:</strong> comunique historias reales.</li>
+        </ul>
+
+        <form style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+            <input type="text" placeholder="Nombre" style="padding: 12px; border: 1px solid var(--cream); background: transparent; color: var(--cream); border-radius: 5px;">
+            <input type="text" placeholder="Empresa" style="padding: 12px; border: 1px solid var(--cream); background: transparent; color: var(--cream); border-radius: 5px;">
+            <button type="button" class="cta-btn" style="border-radius: 5px;">Quiero saber más</button>
+        </form>
+        
+        <button class="cta-btn cta-btn-secondary" style="border-radius: 5px;" onclick="irA360DesdeAlianzas()">Conoce a Pilar y Carolina</button>
+    </div>
+
+    <div id="overlay-expo" class="overlay">
+        <button class="close-btn" onclick="toggleExpo()">✕</button>
+        <h2>Exposición fotográfica itinerante:<br>“Desde el corazón de Sierra Morena,<br>historias que construyen comunidad”</h2>
+        <p>¡Este <strong>Territorio Progresa</strong> baja hasta la Universidad de La Sabana!</p>
+        <p>Si quieres vivir esta experiencia y conocer lo que hay detrás de la puerta de Sierra Morena, te invitamos a escanear este código QR.</p>
+        <div class="qr-placeholder">
+            <img src="QRcode.png" alt="Código QR de la Exposición">
+        </div>
+        <button class="cta-btn" style="background-color: var(--blue); color: var(--cream); border-radius: 5px;" onclick="toggleExpo()">Entendido</button>
+    </div>
+
     <script>
         let homeVisitado = false;
         
@@ -555,7 +541,6 @@
             document.getElementById('overlay-alianzas').classList.toggle('active');
         }
         
-        // Nueva función para toggle del pop-up de la expo de foto
         function toggleExpo() {
             document.getElementById('overlay-expo').classList.toggle('active');
         }
@@ -628,12 +613,10 @@
             window.dispatchEvent(new Event('resize'));
         }
         
-        // Nueva función para el botón de vuelta al homepage en el 360
         function volverAHomepage() {
             document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
             document.getElementById('pantalla-1').classList.add('active');
             desactivar360();
-            // Asegurarse de que el pop-up de la expo esté cerrado al volver
             document.getElementById('overlay-expo').classList.remove('active');
             actualizarProgreso();
         }
